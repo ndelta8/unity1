@@ -7,6 +7,8 @@ using UnityEngine.UIElements;
 using UnityEditor;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.LowLevel;
 
 public class plmovement : MonoBehaviour
 {
@@ -36,6 +38,8 @@ public class plmovement : MonoBehaviour
     public int jumpspeed = 16;
     public float sprint = 1.7f;
 
+    Vector3 playerdir;
+
 
     void Start()
     {
@@ -56,6 +60,8 @@ public class plmovement : MonoBehaviour
         look();
         move();
         Jump();
+
+        shoot();
 
         resetpos();
         changePerspective();
@@ -89,6 +95,7 @@ public class plmovement : MonoBehaviour
 
 
         camPivotTransform.localRotation = Quaternion.Euler(mouseRotationY, 0f, 0f);
+
     }
 
     float falltime = 0f;
@@ -131,9 +138,9 @@ public class plmovement : MonoBehaviour
         {
             playerVelocity.y -= Math.Clamp((0.04f * falltime), 0.1f, 0.3f);
         }
-        if (playerVelocity.y < -60f)
+        if (!(-30f < playerVelocity.y))
         {
-            playerVelocity.y = -60f;
+            playerVelocity.y = -30f;
         }
         cc.Move(playerVelocity * Time.deltaTime);
     }
@@ -196,6 +203,23 @@ public class plmovement : MonoBehaviour
         }
     }
 
+    void shoot()
+    {
+        if (!Input.GetMouseButtonDown(GameSettings.gs.fire))
+        {
+            return; 
+        }
+        RaycastHit hitmob;
+        float distance = 300;
+        int cul = cameraTransform.GetComponent<Camera>().cullingMask;
+        int pll = LayerMask.NameToLayer("player");
+        cul &= ~(1 << pll);
+        bool shoot = Physics.Raycast(Camera.main.ScreenPointToRay(new Vector2(Screen.width/2, Screen.height/2)), out hitmob, distance, cul);
+        if (shoot)
+        {
+            print("!!! : " +  hitmob.collider.name);
+        }
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

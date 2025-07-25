@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameSettings
 {
 
     public static GameSettings gs = new GameSettings();
+
+    //GAMEMOUSE
+    public int fire = 0;
 
     //GAMEKEYS
     public KeyCode run = KeyCode.LeftShift;
